@@ -15,8 +15,28 @@ app.get("/", (req, res) => {
 });
 
 app.post("/create", (req, res) => {
-  fs.writeFile(`./files/${req.body.title.split(' ').join('')}.txt`, req.body.details,() => {
-    res.redirect('/');
+  fs.writeFile(
+    `./files/${req.body.title.split(" ").join("")}.txt`,
+    req.body.details,
+    () => {
+      res.redirect("/");
+    }
+  );
+});
+
+app.get("/file/:filename", (req, res) => {
+  fs.readFile(`./files/${req.params.filename}`, "utf-8", (err, data) => {
+    res.render("show", { filename: req.params.filename, filedata: data });
+  });
+});
+
+app.get("/edit/:filename", (req, res) => {
+  res.render("edit", { prev: req.params.filename });
+});
+
+app.post("/edit", (req, res) => {
+  fs.rename(`./files/${req.body.previous}`,`./files/${req.body.new}`,() => {
+    res.redirect('/')
   })
 });
 
